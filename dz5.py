@@ -3,82 +3,86 @@ import random
 import time
 
 colors = ["red", "yellow", "blue", "green"]
-random_color = 3
+# убраны переменные которые избыточны (но это не обязательно)
 start_time = 0
-end_time = 0
 rclick = 0
 wclick = 0
 
 window = tk.Tk()
 
-
 window.geometry("300x300")
+bottom_frame = tk.Frame(window)
+bottom_frame.pack(side="bottom")
+
 label = tk.Label(
-    text="Timer Calculator",
-    foreground="white",  # Set the text color to white
-    background="black",  # Set the background color to black
-    width=100,
-    height=2
+        text="Timer Calculator",
+        foreground="white",  # Set the text color to white
+        background="black",  # Set the background color to black
+        width=100,
+        height=2
 )
-label_right = tk.Label(
-    text="Правильные: 0",
-    foreground="green"
+label_right = tk.Label(bottom_frame,
+                       text="Правильные: 0",
+                       foreground="green"
 
-)
+                       )
 
-label_wrong = tk.Label(
-    text="Неправильные: 0",
-    foreground="red"
+label_wrong = tk.Label(bottom_frame,
+                       text="Неправильные: 0",
+                       foreground="red"
 
-)
+                       )
+
 
 def send_message():
-    global end_time
-    global rclick,wclick
-    if random_color == 0:
-        end_time = time.time()
-        difference = round(end_time - start_time,3)
+    global rclick, wclick
+    if label["background"] == "red":
+        difference = round(time.time() - start_time, 3)
         result.config(text=f"Реакция: {difference} сек.")
-        rclick = rclick+1
+        rclick = rclick + 1
         label_right.config(text=f"Правильные: {rclick}")
+        label.config(background="grey") # добавленно чтоб сменить цвет и небыло повторного нажатия
     else:
-        list_msg = ["И снова нет)","Ты что дальтоник?","Уже выпил?","Ручки дрожат?"]
-        result.config(text= list_msg[random.randint(0,3)])
-        wclick = wclick+1
+        list_msg = ["И снова нет)", "Ты что дальтоник?", "Уже выпил?",
+                    "Ручки дрожат?"]
+        result.config(text=list_msg[random.randint(0, 3)])
+        wclick = wclick + 1
         label_wrong.config(text=f"Неправильные: {wclick}")
+        label.config(background="grey")
+        window.update() # обновляет изображение можно убрать и посмотреть в чем разница 
+        time.sleep(1) # добавляет секнду к фолс нажатию, чтоб не возможно было использовать сильно частые клики
+
+
 button = tk.Button(
-    text="Click me if red",
-    bg="blue",
-    fg="yellow",
-    width=12,
-    height=1,
-    command=send_message
+        text="Click me if red",
+        background="blue",
+        width=12,
+        height=1,
+        command=send_message
 )
 
 result = tk.Label(
-    text="0.0",
-    foreground="red",  # Set the text color to white
-    font=("Arial", 25)
+        text="0.0",
+        foreground="red",  # Set the text color to white
+        font=("Arial", 25)
 )
 
 for c in window.children:
     window.children[c].pack()
 
+label_wrong.pack(side="left")
+label_right.pack(side="right")
 
-label_wrong.pack(anchor = "e", side = "bottom")
-label_right.pack(anchor = "w", side = "bottom")
 
 def timer_update():
-    global random_color
     global start_time
-    random_color = random.randint(0,3)
-    label.config(background=colors[random_color])
-    if random_color == 0:
+    label.config(background=colors[random.randint(0, 3)])
+    if label["background"] == "red":
         start_time = time.time()
 
-    window.after(random.randint(500,2500), timer_update)
-window.after(random.randint(500,2500), timer_update)
+    window.after(random.randint(500, 2500), timer_update)
 
 
+window.after(random.randint(500, 2500), timer_update)
 
 window.mainloop()
