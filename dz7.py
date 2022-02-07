@@ -71,11 +71,16 @@ def plus_user():
                 file_writer = csv.DictWriter(w_file, delimiter=";", lineterminator="\r",fieldnames=("username", "right_answer", "avg","date"))
                 file_writer.writeheader()
                 file_writer.writerows(tmp_to_write)
+                messagebox.showinfo("Сохранение...",f"Данние для {current_username} обновлены!")
+
         else:
             tmp_item = {"username": current_username, "right_answer":right_answer_percent, "avg":react_avg,"date":dt_string}
             with open(database_filename, mode="a", encoding='utf-8') as w_file:
                 file_writer = csv.DictWriter(w_file, delimiter=";", lineterminator="\r",fieldnames=("username", "right_answer", "avg","date"))
                 file_writer.writerow(tmp_item)
+                messagebox.showinfo("Сохранение...",f"Данние для {current_username} сохранены!")
+
+
     else:
         messagebox.showwarning("Не сохранено", "У Вас слишком низкий процент правильных нажатий!")
 
